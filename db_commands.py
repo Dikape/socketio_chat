@@ -1,12 +1,16 @@
 import argparse
+import peewee_async
 
-from app import app
-from chat import models
+from socket_app.chat import models
+from socket_app.settings import database
+
+
+objects = peewee_async.Manager(database)
 
 
 def create_tables():
     print('CREATE TABLES:')
-    with app.objects.allow_sync():
+    with objects.allow_sync():
         for name in models.__all__:
             current_class = getattr(models, name)
             current_class.create_table(True)
@@ -15,7 +19,7 @@ def create_tables():
 
 def drop_tables():
     print('DROP TABLES:')
-    with app.objects.allow_sync():
+    with objects.allow_sync():
         for name in models.__all__:
             current_class = getattr(models, name)
             current_class.drop_table(True)

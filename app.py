@@ -1,12 +1,13 @@
 import aiohttp_jinja2
 import jinja2
 import peewee_async
+
 from aiohttp import web
 from socket_app.chat.socket_handlers import sio
 
-import settings
-from routes import setup_routes
-from middlewares import MIDDLWARES
+from socket_app import settings
+from socket_app.routes import setup_routes
+from socket_app.middlewares import MIDDLWARES
 
 
 def make_app():

@@ -1,5 +1,8 @@
+import uuid
 import peewee
-from settings import database
+
+from datetime import datetime
+from socket_app.settings import database
 
 __all__ = ('User', 'Room', 'Message')
 
@@ -13,12 +16,24 @@ class BaseModel(peewee.Model):
 class User(BaseModel):
     username = peewee.CharField(max_length=20, null=False, index=True, unique=True)
 
+    def __str__(self):
+        return self.username
+
 
 class Room(BaseModel):
-    pass
+    id = peewee.UUIDField(default=uuid.uuid4, primary_key=True)
+    title = peewee.CharField(max_length=50, null=False)
+    created_datetime = peewee.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return self.title
 
 
 class Message(BaseModel):
-    pass
+    text = peewee.CharField(max_length=200, null=False)
+    author = peewee.ForeignKeyField(User)
+    room = peewee.ForeignKeyField(Room)
+    created_datetime = peewee.DateTimeField(default=datetime.now)
 
-
+    def __str__(self):
+        return self.text
