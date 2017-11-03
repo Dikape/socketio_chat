@@ -1,7 +1,7 @@
 import argparse
 
-import models
 from app import app
+from chat import models
 
 
 def create_tables():

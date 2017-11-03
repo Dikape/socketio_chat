@@ -1,17 +1,16 @@
-import jinja2
 import aiohttp_jinja2
+import jinja2
 import peewee_async
+from aiohttp import web
+from socket_app.chat.socket_handlers import sio
 
 import settings
-
-from aiohttp import web
-
 from routes import setup_routes
-from socket_handlers import sio
+from middlewares import MIDDLWARES
 
 
 def make_app():
-    app = web.Application(middlewares=settings.MIDDLWARES)
+    app = web.Application(middlewares=MIDDLWARES)
 
     # add app to socketio objects
     sio.attach(app)

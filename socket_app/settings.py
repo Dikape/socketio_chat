@@ -1,11 +1,7 @@
-import base64
+import os
 import peewee_async
 
-from cryptography import fernet
-from aiohttp_session import session_middleware
-from aiohttp_session.cookie_storage import EncryptedCookieStorage
-
-from middlewares import user_middleware
+BASE_DIR = os.path.join(os.getcwd(), 'socket_app')
 
 DATABASE = {
     'database': 'socket_db',
@@ -18,15 +14,5 @@ database = peewee_async.PostgresqlDatabase(None)
 database.init(**DATABASE)
 database.set_allow_sync(False)
 
-# key for sessions
-fernet_key = fernet.Fernet.generate_key()
-secret_key = base64.urlsafe_b64decode(fernet_key)
-
-
-MIDDLWARES = [
-    session_middleware(EncryptedCookieStorage(secret_key)),
-    user_middleware
-]
-
-TEMPLATE_DIRS = ['templates',]
-STATIC_DIR = 'static'
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'),]
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
