@@ -16,30 +16,41 @@
   <body>
     <h1>CHAT: {{ id }}</h1>
     <h1><a href="{{ app.router.index.url() }}">HOME PAGE</a></h1>
+    <ul id="users_online"></ul>
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
   <script src="{{ app.router.static.url(filename='socket.io.js') }}"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
     <script>
       var socket = io('http://127.0.0.1:8080/chat');
       socket.on('connect', function(){
             console.log('a user connected');
       });
+
       socket.on('reply', function(data){
           console.log('a event: ' + data);
           $('#messages').append($('<li>').text(data));
       });
+
+      socket.on('online', function(data){
+          $('#users_online').append($('<li>').text(data['user']));
+      });
+
       socket.on('disconnect', function(){
           console.log('a user disconnected');
       });
+
       $('form').submit(function(){
           var message =  $('#m').val();
-      socket.emit('chat message', message);
+      socket.emit('message', message);
       $('#m').val('');
       return false;
     });
+
     </script>
+
   </body>
 </html>

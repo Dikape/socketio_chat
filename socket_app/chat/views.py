@@ -12,7 +12,10 @@ async def index(request):
 @aiohttp_jinja2.template('chat.html')
 async def chat(request):
     id = request.match_info['id']
-    return {'id': id}
+    if request.user:
+        return {'id': id}
+    else:
+        raise web.HTTPForbidden
 
 
 async def login_user(request, user):
