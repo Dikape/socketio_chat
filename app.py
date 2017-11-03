@@ -2,6 +2,9 @@ import aiohttp_jinja2
 import jinja2
 import peewee_async
 
+import sys, os
+sys.path.append(os.path.join(os.getcwd(), 'socket_app'))
+
 from aiohttp import web
 from socket_app.chat.socket_handlers import sio
 

@@ -15,6 +15,7 @@ class BaseModel(peewee.Model):
 
 class User(BaseModel):
     username = peewee.CharField(max_length=20, null=False, index=True, unique=True)
+    password = peewee.CharField(max_length=100, null=False)
 
     def __str__(self):
         return self.username
@@ -27,6 +28,11 @@ class Room(BaseModel):
 
     def __str__(self):
         return self.title
+
+
+class UserRoom(BaseModel):
+    user = peewee.ForeignKeyField(User, related_name='chats')
+    room = peewee.ForeignKeyField(Room, related_name='members')
 
 
 class Message(BaseModel):

@@ -2,6 +2,7 @@ import argparse
 import peewee_async
 
 from socket_app.chat import models
+
 from socket_app.settings import database
 
 
@@ -22,7 +23,7 @@ def drop_tables():
     with objects.allow_sync():
         for name in models.__all__:
             current_class = getattr(models, name)
-            current_class.drop_table(True)
+            current_class.drop_table(fail_silently=True, cascade=True)
             print('droped table for class {0}'.format(name))
 
 
