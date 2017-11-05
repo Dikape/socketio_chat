@@ -43,7 +43,7 @@ async def create_chat(request):
     data = await request.post()
     title = data['chat_title']
     chat, created = await request.app.objects.get_or_create(Room, title=title)
-    if not created:
-        raise web.HTTPConflict
+    # if not created:
+    #     raise web.HTTPConflict
     url = request.app.router['index'].url_for()
     return web.HTTPFound(url)
