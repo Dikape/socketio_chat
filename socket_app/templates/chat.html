@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <h1>CHAT: {{ id }}</h1>
+    <h1>CHAT: {{ chat.title }}</h1>
     <h1><a href="{{ app.router.index.url() }}">HOME PAGE</a></h1>
     <ul id="users_online"></ul>
     <ul id="messages"></ul>
@@ -28,6 +28,7 @@
       var socket = io('http://127.0.0.1:8080/chat');
       socket.on('connect', function(){
             console.log('a user connected');
+            socket.emit('enter_room', {'room': '{{ chat.id }}'});
       });
 
       socket.on('reply', function(data){
@@ -45,7 +46,8 @@
 
       $('form').submit(function(){
           var message =  $('#m').val();
-      socket.emit('message', message);
+          var room = '{{ chat.id }}';
+      socket.emit('message', {'message': message, 'room': room});
       $('#m').val('');
       return false;
     });

@@ -12,9 +12,6 @@ __all__ = ('connect',
 @sio.on('connect', namespace='/chat')
 async def connect(sid, environ):
     request = environ.get('aiohttp.request')
-    url = request.url
-    print(url)
-    await sio.enter_room(sid=sid, room=id, namespace='/chat')
     if request.user:
         await sio.emit('online', {'user': request.user.username}, namespace='/chat')
 
@@ -22,7 +19,7 @@ async def connect(sid, environ):
 @sio.on('message', namespace='/chat')
 async def message(sid, data):
     print("message ", data)
-    await sio.emit('reply', data, namespace='/chat', room='3b3e3908-1b48-49f2-b18d-6ce52f876fb0')
+    await sio.emit('reply', data['message'], namespace='/chat', room=data['room'])
 
 
 @sio.on('disconnect', namespace='/chat')
@@ -31,18 +28,15 @@ async def disconnect(sid):
 
 
 @sio.on('close_room', namespace='/chat')
-async def close_room(room):
+def close_room(room):
     print("Room {0} has been deleted".format(room))
-    await sio.close_room(room=room, namespace='/chat')
+    sio.close_room(room=room, namespace='/chat')
 
 
 @sio.on('enter_room', namespace='/chat')
-async def enter_room(sid, room):
-    print("Room {0} has been deleted".format(room))
-    await sio.enter_room(sid, room=room, namespace='/chat')
+def enter_room(sid, data):
+    if data['room'] and sid:
+        print(sio)
+        print("User has entered to room {0}".format(data['room']))
+        sio.enter_room(sid, room=data['room'], namespace='/chat')
 
-#
-# @sio.on('leave_room', namespace='/chat')
-# async def enter_room(sid, room):
-#     print("Room {0} has been deleted".format(room))
-#     await sio.leave_room(sid, room=room, namespace='/chat')
