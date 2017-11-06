@@ -1,46 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Chat with socketIO</title>
-</head>
-<body>
-    <div id="content">
-        {% block content %}
-            <h1>Hello {{ request.user.username }}. Now you are at home page</h1>
-            {% if request.user %}
-                <h3>To add new chat use this form:</h3>
-                    <form action="/add_chat" method="post" accept-charset="utf-8"
-                        enctype="application/x-www-form-urlencoded">
+{% extends 'base.html' %}
 
-                        <label for="chat_title">Title:</label>
-                        <input id="chat_title" name="chat_title" type="text" value="" autofocus/>
-                        <input type="submit" value="create"/>
-                    </form>
-                <h3>Your chats:</h3>
-                <ul>
+{% block content %}
+    {% if request.user %}
+        <h3>To add new chat use this form:</h3>
+            <form action="/add_chat" method="post" accept-charset="utf-8"
+                enctype="application/x-www-form-urlencoded">
 
-                {% for obj in chats %}
+                <label for="chat_title">Title:</label>
+                <input id="chat_title" name="chat_title" type="text" value="" autofocus/>
+                <input type="submit" value="create"/>
+            </form>
+        <h3>Your chats:</h3>
+        <ul>
 
-                    <li><a href="{{ app.router.chat.url(parts={'id':obj.id}) }}">{{ obj.title }}</a> - {{ obj.created_datetime }}</li>
-                {% endfor %}
-                </ul>
+        {% for obj in chats %}
 
-            {% else %}
-                <h3>To login or register use this:</h3>
-                    <form action="/login" method="post" accept-charset="utf-8"
-                        enctype="application/x-www-form-urlencoded">
+            <li><a href="{{ app.router.chat.url(parts={'id':obj.id}) }}">{{ obj.title }}</a> - {{ obj.created_datetime }}</li>
+        {% endfor %}
+        </ul>
 
-                        <label for="username">Username:</label>
-                        <input id="username" name="username" type="text" value="" autofocus/>
-                        <label for="password">Password:</label>
-                        <input id="password" name="password" type="password" value=""/>
+    {% else %}
+        <h3>To login or register use this:</h3>
+            <form action="/login" method="post" accept-charset="utf-8"
+                enctype="application/x-www-form-urlencoded">
 
-                        <input type="submit" value="login"/>
-                    </form>
-            {% endif %}
-        {% endblock %}
-    </div>
+                <label for="username">Username:</label>
+                <input id="username" name="username" type="text" value="" autofocus/>
+                <label for="password">Password:</label>
+                <input id="password" name="password" type="password" value=""/>
 
-</body>
-</html>
+                <input type="submit" value="login"/>
+            </form>
+    {% endif %}
+{% endblock %}
