@@ -20,7 +20,8 @@ async def chat(request):
             raise web.HTTPNotFound
         return {'chat': chat}
     else:
-        raise web.HTTPForbidden
+        url = request.app.router['index'].url_for()
+        return web.HTTPFound(url)
 
 
 async def login_user(request, user):
@@ -31,7 +32,7 @@ async def login(request):
     data = await request.post()
     username = data['username']
     password = data['password']
-    user, create = await request.app.objects.create_or_get(
+    user, create = await request.app.objects.get_or_create(
         User, username=username,
         password=password)
     await login_user(request, user)

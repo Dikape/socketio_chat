@@ -8,6 +8,7 @@
             <ul id="users_online">Users online:</ul>
         </div>
         <div class="col-md-9" id="chat-box">
+{#            <ul id="cur_list"></ul>#}
             <ul id="messages"></ul>
             <form action="">
                 <div class="col-md-11">
@@ -21,6 +22,7 @@
     </div>
 
     <script>
+        var limit_from = 1;
         var socket = io('http://127.0.0.1:8080/chat');
         socket.on('connect', function(){
 {#            console.log('a user connected');#}
@@ -28,8 +30,7 @@
         });
 
         socket.on('reply', function(data){
-{#          console.log(data);#}
-          $('#messages').append($('<li>').html('<b>' + data['user'] + ': </b>' + data['text']));
+            addMessage(data, $('#messages'))
         });
 
         socket.on('online', function(data){
@@ -40,6 +41,22 @@
           console.log('a user disconnected');
         });
 
+        socket.on('previous_messages', function (data){
+            var cur_list = $('<ul>');
+            data.forEach(function (t) {
+                addMessage(t, cur_list)
+            });
+            $("#messages").prepend(cur_list.children().clone());
+
+            if (limit_from===1) {
+                scrollChat(0);
+            }else{
+                scrollChat(20);
+            }
+            limit_from += 1;
+
+        });
+
         $('form').submit(function(){
             var message =  $('#m').val();
             var room = '{{ chat.id }}';
@@ -47,20 +64,52 @@
                 socket.emit('message', {'message': message, 'room': room});
                 $('#m').val('');
             }
+            scrollChat(0);
+            return false;
+        });
+        $(document).ready(function () {
+{#            alert('assadsadsa');#}
+            var room = '{{ chat.id }}';
+            var chatbox_height = $('#messages').outerHeight();
+
+            var messages_number = chatbox_height/50;
+            socket.emit('get_previous', {'room': room, 'limit_from': limit_from, 'messages_number': messages_number+1});
 
 
+            $('#messages').scroll(function() {
+                if ($(this).scrollTop() === 0) {
+                    socket.emit('get_previous', {'room': room, 'limit_from': limit_from, 'messages_number': messages_number});
+                }
+            });
+        });
+        function scrollChat(to_height) {
             var ul = $("#messages");
             var last_li = ul.children().last();
-            if (last_li.length) {
+            if (last_li.length && to_height===0) {
                 var wholeHeight = last_li.offset().top - ul.children().first().offset().top;
+
 {#                console.log(wholeHeight  +'--'+ last_li.html() + '--' + last_li.outerHeight());#}
                 ul.animate({
                      scrollTop:  wholeHeight+'px'
                 }, 'fast');
             }
+            else if(to_height>0){
+                ul.animate({
+                     scrollTop:  to_height+'px'
+                }, 'fast');
+            }
+        }
 
-            return false;
-        });
+        function addMessage(data, cur_list) {
+            console.log(data, cur_list);
+            var user = '{{ request.user }}';
+            var message_li = $('<li>');
+            if (user===data['author']){
+                message_li = $('<li class="my_message">');
+            }
+            cur_list.append(message_li.html(
+                '<b>' + data['author'] + '</b> (' + data['created_datetime'] + '): '  + data['text']));
+        }
 
     </script>
     <script>

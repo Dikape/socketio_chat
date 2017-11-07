@@ -41,5 +41,18 @@ class Message(BaseModel):
     room = peewee.ForeignKeyField(Room)
     created_datetime = peewee.DateTimeField(default=datetime.now)
 
+    class Meta:
+        database = database
+        order_by = ['-created_datetime']
+
     def __str__(self):
         return self.text
+
+    def to_json(self):
+        message = {
+            'text': self.text,
+            'author': self.author.username,
+            'created_datetime': self.created_datetime.strftime("%d/%m/%y %H:%M"),
+            'room': str(self.room.id)
+        }
+        return message
