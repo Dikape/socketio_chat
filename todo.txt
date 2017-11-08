@@ -1,0 +1,23 @@
+
++1. add user model
++2. add chat model
++1. Create separate rooms 
++2. add posibility connect to room
+3. add posibility invite to room
+4. add posibility leave room 
+5. add possibility delete room
+6. notifications
++7. use redis
+8. run on gunicorn
+
++При надсиланні меседжа для кімнати зберігати повідомлення. 
+Через aiohttp прив'язувати людей до кімнат
+Додати в кімнаті булеве значення чи вона відкрита (для пошуку лише по відкритих кімнатах)для закритих реалізувати запрошення до кімнати через aiohttp 
+шифрувати паролі 
++зверстати за допомогою bootstrap
+Ті хто онлайн за допомогою mgr.get_participants
++Підгружати по декілька повідомлень
+
+APIґ
+Docker
+Тести

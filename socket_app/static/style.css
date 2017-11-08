@@ -3,7 +3,9 @@
     margin-bottom: 15px;
     padding:10px;
     height:75vh;
-    overflow-y: auto}
+    overflow-y: auto;
+    font-size: 16px;
+}
 
 #messages li {
     padding: 15px 10px;

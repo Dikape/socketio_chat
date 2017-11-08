@@ -58,37 +58,37 @@
         });
 
         $('form').submit(function(){
-            var message =  $('#m').val();
+            var message =  $('#m');
+            var m_value = message.val();
             var room = '{{ chat.id }}';
-            if (message.length) {
-                socket.emit('message', {'message': message, 'room': room});
-                $('#m').val('');
+            if (m_value.length) {
+                socket.emit('message', {'message': m_value, 'room': room});
+                message.val('');
             }
             scrollChat(0);
             return false;
         });
-        $(document).ready(function () {
-{#            alert('assadsadsa');#}
-            var room = '{{ chat.id }}';
-            var chatbox_height = $('#messages').outerHeight();
 
+        $(document).ready(function () {
+            var room = '{{ chat.id }}';
+            var m_list = $('#messages');
+            var chatbox_height = m_list.outerHeight();
             var messages_number = chatbox_height/50;
             socket.emit('get_previous', {'room': room, 'limit_from': limit_from, 'messages_number': messages_number+1});
 
-
-            $('#messages').scroll(function() {
+            m_list.scroll(function() {
+                console.log($(this).scrollTop());
                 if ($(this).scrollTop() === 0) {
                     socket.emit('get_previous', {'room': room, 'limit_from': limit_from, 'messages_number': messages_number});
                 }
             });
         });
+
         function scrollChat(to_height) {
             var ul = $("#messages");
             var last_li = ul.children().last();
             if (last_li.length && to_height===0) {
                 var wholeHeight = last_li.offset().top - ul.children().first().offset().top;
-
-{#                console.log(wholeHeight  +'--'+ last_li.html() + '--' + last_li.outerHeight());#}
                 ul.animate({
                      scrollTop:  wholeHeight+'px'
                 }, 'fast');
